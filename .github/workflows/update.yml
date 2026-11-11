@@ -24,16 +24,23 @@ jobs:
         env:
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
         run: python generate.py --output rex-tmdb-posters.json
+      - name: Create smaller Rex subscriptions
+        run: python split_library.py rex-tmdb-posters.json
       - name: Validate JSON and poster links
-        run: python validate_library.py rex-tmdb-posters.json --check-links 25
+        run: |
+          python validate_library.py rex-tmdb-posters.json --check-links 25
+          python validate_library.py rex-tmdb-movies.json
+          python validate_library.py rex-tmdb-tv.json
+          python validate_library.py rex-tmdb-anime.json
+          python validate_library.py rex-tmdb-variety.json
       - name: Commit changes
         run: |
-          if [ -z "$(git status --porcelain -- rex-tmdb-posters.json)" ]; then
+          if [ -z "$(git status --porcelain -- rex-tmdb-*.json)" ]; then
             echo "No changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add rex-tmdb-posters.json
+          git add rex-tmdb-*.json
           git commit -m "chore: update TMDB poster library"
           git push

@@ -86,6 +86,15 @@ https://raw.githubusercontent.com/YOUR_NAME/rex-tmdb-posters/main/rex-tmdb-poste
 
 也可以在 GitHub 中打开该 JSON，点击 **Raw** 后复制地址。公开仓库可直接访问；私有仓库的 Raw 地址需要鉴权，通常不适合作为 Rex 的公开订阅源。更新提交后 Raw/CDN 缓存可能需要短暂时间刷新。
 
+如果 Rex 无法解析 5000 条的总库，请改用自动生成的较小分类订阅：
+
+```text
+https://raw.githubusercontent.com/YOUR_NAME/rex-tmdb-posters/main/rex-tmdb-movies.json
+https://raw.githubusercontent.com/YOUR_NAME/rex-tmdb-posters/main/rex-tmdb-tv.json
+https://raw.githubusercontent.com/YOUR_NAME/rex-tmdb-posters/main/rex-tmdb-anime.json
+https://raw.githubusercontent.com/YOUR_NAME/rex-tmdb-posters/main/rex-tmdb-variety.json
+```
+
 ## 真实接口约束
 
 - TMDB Discover 接口单页通常返回 20 条，页码上限为 500；生成器按页获取并尊重 `429`，遇到临时错误会指数退避重试。
