@@ -28,7 +28,7 @@ jobs:
         run: python validate_library.py rex-tmdb-posters.json --check-links 25
       - name: Commit changes
         run: |
-          if git diff --quiet -- rex-tmdb-posters.json; then
+          if [ -z "$(git status --porcelain -- rex-tmdb-posters.json)" ]; then
             echo "No changes"
             exit 0
           fi
