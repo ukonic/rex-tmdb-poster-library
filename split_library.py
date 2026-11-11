@@ -9,10 +9,10 @@ from pathlib import Path
 
 
 PARTS = [
-    ("movies", "TMDB 热门电影海报库", 0, 2000),
-    ("tv", "TMDB 热门电视剧海报库", 2000, 3500),
-    ("anime", "TMDB 热门动漫海报库", 3500, 4500),
-    ("variety", "TMDB 热门综艺海报库", 4500, 5000),
+    ("movies", "TMDB 最新热门电影海报库", 0, 2000),
+    ("tv", "TMDB 最新热门电视剧海报库", 2000, 3500),
+    ("anime", "TMDB 最新热门动漫海报库", 3500, 4500),
+    ("variety", "TMDB 最新热门综艺海报库", 4500, 5000),
 ]
 
 
@@ -33,7 +33,8 @@ def main() -> int:
         document = {
             "name": name,
             "description": (
-                f"从 TMDB 热门影视海报总库拆分，共 {end - start} 个海报；中文名称优先。"
+                f"从 TMDB 最新热门影视海报总库拆分，共 {end - start} 个海报；"
+                "按上映/首播日期由新到旧排列，中文名称优先。"
                 "This product uses the TMDB API but is not endorsed or certified by TMDB."
             ),
             "icons": icons[start:end],

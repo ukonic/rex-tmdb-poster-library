@@ -88,14 +88,20 @@ class TmdbClient:
 
 
 def buckets(args: argparse.Namespace) -> list[Bucket]:
-    common = {"sort_by": "popularity.desc", "include_adult": "false"}
+    common = {"include_adult": "false"}
+    today = datetime.now(timezone.utc).date().isoformat()
     return [
         Bucket(
             "movie",
             "电影",
             "movie",
             args.movie_count,
-            {**common, "vote_count.gte": "100"},
+            {
+                **common,
+                "sort_by": "primary_release_date.desc",
+                "primary_release_date.lte": today,
+                "vote_count.gte": "100",
+            },
         ),
         Bucket(
             "tv",
@@ -104,6 +110,8 @@ def buckets(args: argparse.Namespace) -> list[Bucket]:
             args.tv_count,
             {
                 **common,
+                "sort_by": "first_air_date.desc",
+                "first_air_date.lte": today,
                 "vote_count.gte": "30",
                 "without_genres": "16,10764,10767",
                 "include_null_first_air_dates": "false",
@@ -116,6 +124,8 @@ def buckets(args: argparse.Namespace) -> list[Bucket]:
             args.anime_count,
             {
                 **common,
+                "sort_by": "first_air_date.desc",
+                "first_air_date.lte": today,
                 "vote_count.gte": "30",
                 "with_genres": "16",
                 "include_null_first_air_dates": "false",
@@ -128,6 +138,8 @@ def buckets(args: argparse.Namespace) -> list[Bucket]:
             args.variety_count,
             {
                 **common,
+                "sort_by": "first_air_date.desc",
+                "first_air_date.lte": today,
                 "vote_count.gte": "10",
                 "with_genres": "10764|10767",
                 "without_genres": "16",
@@ -269,10 +281,11 @@ def main() -> int:
     icons = disambiguate_names(all_records)
     generated = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d")
     document = {
-        "name": "TMDB 热门影视海报库",
+        "name": "TMDB 最新热门影视海报库",
         "description": (
             f"由 TMDB 数据自动生成，共 {len(icons)} 个海报（{'、'.join(distribution)}）；"
-            f"中文名称优先；更新日期 {generated}。This product uses the TMDB API but is not "
+            f"按上映/首播日期由新到旧排列，中文名称优先；更新日期 {generated}。"
+            "This product uses the TMDB API but is not "
             "endorsed or certified by TMDB."
         ),
         "icons": icons,
