@@ -1,0 +1,39 @@
+name: Update Rex TMDB poster library
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 3 * * 1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-rex-tmdb-posters
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Generate library
+        env:
+          TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+        run: python generate.py --output rex-tmdb-posters.json
+      - name: Validate JSON and poster links
+        run: python validate_library.py rex-tmdb-posters.json --check-links 25
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- rex-tmdb-posters.json; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rex-tmdb-posters.json
+          git commit -m "chore: update TMDB poster library"
+          git push
